@@ -2,7 +2,7 @@
  Theme Name:   Accelerate Theme Child
  Theme URI:    http://example.com/accelerate-theme-child/
  Description:  Accelerate Child Theme - Accelerate
- Author:       Your Name!
+ Author:       Regina Cunningham!
  Author URI:   http://example.com
  Template:     accelerate-theme
  Version:      1.0.0
@@ -18,6 +18,23 @@
     background: none repeat scroll 0 0 #45ac9d;
 
 }
+
+#masthead h1 {
+    float: left;
+    font-size: 20px;
+    margin: 0;
+    text-transform: uppercase;
+}
+#masthead li{
+
+	display: inline;
+	margin-right: 10px;
+}
+
+
+
+
+
 .button {
     background: none repeat scroll 0 0 #45ac9d;
 	}
@@ -41,4 +58,63 @@
 	font-weight: bold;
 	color: #45ac9d;
 	text-transform: uppercase;
+}
+/**case studies**/
+article.case-study{
+  margin: 40px 0 0;
+}
+aside.case-study-sidebar{
+  float: left;
+  width: 314px;
+  margin: 0 40px 0 0;
+}
+div.case-study-images{
+  float: left;
+  width: 606px;
+}
+div.case-study-images img{
+
+  margin-bottom: 50px;
+  border: 1px solid #dddddd;
+}
+
+/**Homepage**/
+
+.homepage-featured-work {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+    overflow: auto;
+}
+
+.homepage-featured-work li {
+  list-style: none;
+  float: left;
+  width: 32%;
+  margin-right: 2%;}
+  /*padding-right: 10px;
+  padding-bottom: 50px;*/
+
+
+.homepage-featured-work li:last-of-type {
+    margin-right: 0;}
+
+.social-media-navigation ul li{
+  display: inline;
+  margin-right: 20px;
+}
+
+.social-media-navigation ul li a{
+
+margin-right: 10px;
+}
+
+/**Archive Case Studies**/
+.case-study-sidebar h2{
+
+}
+.case-study-sidebar h6{
+  font-size: 14px;
+  color: #878787;
+font-weight: normal;
 }
