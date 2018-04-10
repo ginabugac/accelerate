@@ -1,14 +1,16 @@
 <?php
 /**
- * The template for displaying case studies
+* The template for displaying the case-study page
  *
- *
+ * This is the template that displays all pages by default.
+ * Please note that this is the WordPress construct of pages
+ * and that other 'pages' on your WordPress site will use a
+ * different template.
  *
  * @package WordPress
- * @subpackage Accelerate_Theme
- * @since Accelerate Theme 1.1
+ * @subpackage Accelerate Marketing
+ * @since Accelerate Marketing 1.0
  */
-
 get_header(); ?>
 
 	<div id="primary" class="site-content">
@@ -21,8 +23,8 @@ get_header(); ?>
 				$image_1 = get_field("image_1");
 				$image_2 = get_field("image_2");
 				$image_3= get_field("image_3"); ?>
-      <article class="case-study">
-				<aside class="case-study-sidebar">
+      <article class="single-case-study">
+				<aside class="single-case-study-sidebar">
 				<h2><?php the_title(); ?></h2>
 				<h5><?php echo $services; ?></h5>
 				<h6>Client: <?php echo $client; ?></h6>
@@ -31,7 +33,7 @@ get_header(); ?>
 					<p><strong><a href="<?php echo $site_link; ?>">Site Link</a></strong></p>
 				</aside>
 
-				<div class="case-study-images">
+				<div class="single-case-study-images">
 					<?php if($image_1) {
 						echo wp_get_attachment_image( $image_1, $size );
           }

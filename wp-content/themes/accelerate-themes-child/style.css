@@ -60,19 +60,19 @@
 	text-transform: uppercase;
 }
 /**case studies**/
-article.case-study{
+article.single-case-study{
   margin: 40px 0 0;
 }
-aside.case-study-sidebar{
+aside.single-case-study-sidebar{
   float: left;
-  width: 314px;
+  width: 200px;
   margin: 0 40px 0 0;
 }
-div.case-study-images{
+div.single-case-study-images{
   float: left;
-  width: 606px;
+  width: 400px;
 }
-div.case-study-images img{
+div.single-case-study-images img{
 
   margin-bottom: 50px;
   border: 1px solid #dddddd;
@@ -98,16 +98,34 @@ div.case-study-images img{
 
 .homepage-featured-work li:last-of-type {
     margin-right: 0;}
+.sidebar{
+    float: right;
+    width: 30%;
+    clear: both;
+}
 
 .social-media-navigation ul li{
   display: inline;
   margin-right: 20px;
+
 }
 
 .social-media-navigation ul li a{
 
 margin-right: 10px;
+
 }
+.social-media-navigation a{
+	border-radius: 50%;
+	padding: 15px;
+	background: black;
+	color: white;
+}
+.social-media-navigation {
+	float:right;
+	width:30%;
+}
+
 
 /**Archive Case Studies**/
 .case-study-sidebar h2{
@@ -118,3 +136,43 @@ margin-right: 10px;
   color: #878787;
 font-weight: normal;
 }
+
+/**Contact Page**/
+
+.ninja-forms-field{
+  float:right;
+  padding: 10px 60px 10px 60px;
+
+}
+#nf-field-4{
+  color: white;
+  background: #45ac9d;
+}
+#content{
+  width: 650px;
+  margin: auto;
+}
+
+/**About Page**/
+.about-contact .button{
+    float: right;
+}**/
+.about-page-hero {
+    background: url("img/taxi-photo.jpg") no-repeat scroll left center / cover rgba(0, 0, 0, 0);
+}
+.service-icon {
+    float:left;
+    
+}
+span{
+    color:#45ac9d;
+}
+
+.footer-desc{
+    
+
+}
+
+
+    
+

@@ -10,35 +10,41 @@
  */
 ?>
 
-		</div><!-- #main -->
+		<div><!--main page-->
 
 
 		<footer id="colophon" class="site-footer" role="contentinfo">
 
 			<div class="site-info">
-				<div class="site-description">
-				<p><?php bloginfo('description'); ?></p>
-				<p>&copy; <?php bloginfo('title'); ?>, LLC
+			
+
+				
+
+<?php green_accelerate_footer(); ?>
+
+<p class="footer-desc"><span class="main-color"><?php bloginfo( 'name' ); ?></span> <?php bloginfo('description');?>
+	
+				
+            
 
 
-				</div>
 
 			<nav class="social-media-navigation" role="navigation">
 				<?php wp_nav_menu( array( 'theme_location' => 'social-media', 'menu_class' => 'social-media-menu' ) ); ?>
 			</nav>
-
+			
+ 
 
 			</div><!-- .site-info -->
 
 		</footer><!-- #colophon -->
 
 	</div><!-- #page -->
+	
+	
 
 
- <?php wp_footer(); ?>
+ 
 
 
 
-
-</body>
-</html>

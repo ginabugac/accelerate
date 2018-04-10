@@ -188,9 +188,11 @@
     <div class="row">
 	<h4>Size &amp; spacing of your icons</h4>
 	<div class="icons_size"><span>Size:</span><input name="sfsi_icons_size" value="<?php echo ($option5['sfsi_icons_size']!='') ?  $option5['sfsi_icons_size'] : '' ;?>" type="text" /><ins>pixels wide &amp; tall</ins> <span class="last">Spacing between icons:</span><input name="sfsi_icons_spacing" type="text" value="<?php echo ($option5['sfsi_icons_spacing']!='') ?  $option5['sfsi_icons_spacing'] : '' ;?>" /><ins>Pixels</ins></div>
+
     <div class="icons_prem_disc">
         <p class="sfsi_prem_plu_desc"><b>New: </b>The Premium Plugin also allows you to define the vertical distance between the icons (and set this differently for mobile vs. desktop): <a href="https://www.ultimatelysocial.com/usm-premium/?utm_source=usmi_settings_page&utm_campaign=more_spacings&utm_medium=banner" target="_blank">Check it out</a></p>
     </div>
+    
     </div>
     
     <div class="row">
@@ -217,6 +219,7 @@
     <div class= "sfsi_new_prmium_follw" style="margin-top: 38px;">
 		<p><b>New: </b>The Premium Plugin gives several more alignment options: <br>- &nbsp;&nbsp; Show icons vertically<br>- &nbsp;&nbsp; Align icons within a widget (left, right, centered)<br>- &nbsp;&nbsp; Align icons within the «container» where you place them via shortcode (left, right, centered) <br><a href="https://www.ultimatelysocial.com/usm-premium/?utm_source=usmi_settings_page&utm_campaign=more_alignment_options&utm_medium=banner" target="_blank">See all features</a></p>
 	</div>
+
     </div>
     
     <div class="row new_wind">
@@ -295,7 +298,53 @@
   </div>
   <!--disable float icons-->
 </div><!-- END icon's floating and stick section -->
- 
+
+<!--*******************************************************  Sharing texts & pictures section STARTS *********************************************************************-->
+
+<div class="row sfsi_custom_social_data_setting" id="custom_social_data_setting">
+
+		<h4>Sharing texts & pictures?</h4>
+		<p>On the pages where you edit your posts / pages you’ll see a (new) section where you can define which pictures & text should be shared. This extra section is displayed on the following:</p>		
+
+			<?php 
+				$checkedS   = (isset($option5['sfsi_custom_social_hide']) && $option5['sfsi_custom_social_hide']=="yes") ? 'checked="checked"': '';	
+				$checked    = (isset($option5['sfsi_custom_social_hide']) && $option5['sfsi_custom_social_hide']=="yes") ? '': 'checked="checked"';
+				$checkedVal = (isset($option5['sfsi_custom_social_hide'])) ? $option5['sfsi_custom_social_hide']: 'no';				
+			?>
+		<div class="social_data_post_types">
+                <ul class="socialPostTypesUl">
+                	<li>
+						<div class="radio_section tb_4_ck">
+							<input type="checkbox" <?php echo $checked; ?> value="page" class="styled"  />
+							<label class="cstmdsplsub">Page</label>
+						</div>
+					</li>
+                	<li>
+						<div class="radio_section tb_4_ck">
+							<input type="checkbox" <?php echo $checked; ?> value="post" class="styled"  />
+							<label class="cstmdsplsub">Post</label>
+						</div>
+					</li>						
+                </ul>
+
+                <ul class="sfsi_show_hide_section">
+               		<li>
+						<div class="radio_section tb_4_ck">
+							<input name="sfsi_custom_social_hide" type="checkbox" <?php echo $checkedS; ?> value="<?php echo $checkedVal; ?>" class="styled"  />
+							<label class="cstmdsplsub">Hide section for all</label>
+						</div>
+					</li>
+                </ul>
+ 		</div>
+
+		<div class="sfsi_new_prmium_follw sfsi_social_sharing" style="margin-bottom: 15px;">
+			<p>Note: This feature is currently only available in the Premium Plugin. <a href="https://www.ultimatelysocial.com/usm-premium/?utm_source=usmi_settings_page&utm_campaign=define_pic_and_text&utm_medium=banner" target="_blank">See all features</a>
+			</p>
+		</div> 		
+</div>
+
+<!--*******************************************************  Sharing texts & pictures section CLOSES *********************************************************************-->
+
  <!-- mouse over text section start here -->
  <div class="row mouse_txt">
     <h4>Mouseover text</h4>

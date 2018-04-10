@@ -5,7 +5,7 @@ Plugin URI: http://ultimatelysocial.com
 Description: Easy to use and 100% FREE social media plugin which adds social media icons to your website with tons of customization features!. 
 Author: UltimatelySocial
 Author URI: http://ultimatelysocial.com
-Version: 1.7.2
+Version: 1.8.9
 License: GPLv2 or later
 */
 global $wpdb;
@@ -15,8 +15,26 @@ define('SFSI_DOCROOT',    dirname(__FILE__));
 define('SFSI_PLUGURL',    plugin_dir_url(__FILE__));
 define('SFSI_WEBROOT',    str_replace(getcwd(), home_url(), dirname(__FILE__)));
 
+function sfsi_get_current_page_url()
+{
+	global $post, $wp;
+
+	if (!empty($wp)) {
+		return home_url(add_query_arg(array(),$wp->request));
+	}
+	elseif(!empty($post))
+	{
+		return get_permalink($post->ID);
+	}
+	else
+	{
+		return site_url();
+	}
+}
+
 /* load all files  */
 include(SFSI_DOCROOT.'/libs/controllers/sfsi_socialhelper.php');
+include(SFSI_DOCROOT.'/libs/controllers/sfsi_class_theme_check.php');
 include(SFSI_DOCROOT.'/libs/sfsi_install_uninstall.php');
 include(SFSI_DOCROOT.'/libs/controllers/sfsi_buttons_controller.php');
 include(SFSI_DOCROOT.'/libs/controllers/sfsi_iconsUpload_contoller.php');
@@ -26,17 +44,29 @@ include(SFSI_DOCROOT.'/libs/controllers/sfsi_frontpopUp.php');
 include(SFSI_DOCROOT.'/libs/controllers/sfsiocns_OnPosts.php');
 include(SFSI_DOCROOT.'/libs/sfsi_widget.php');
 include(SFSI_DOCROOT.'/libs/sfsi_subscribe_widget.php');
+include(SFSI_DOCROOT.'/libs/sfsi_custom_social_sharing_data.php');
+include(SFSI_DOCROOT.'/libs/sfsi_ajax_social_sharing_settings_updater.php');
 
 /* plugin install and uninstall hooks */
 register_activation_hook(__FILE__, 'sfsi_activate_plugin' );
 register_deactivation_hook(__FILE__, 'sfsi_deactivate_plugin');
 register_uninstall_hook(__FILE__, 'sfsi_Unistall_plugin');
 
-if(!get_option('sfsi_pluginVersion') || get_option('sfsi_pluginVersion') < 1.72)
+if(!get_option('sfsi_pluginVersion') || get_option('sfsi_pluginVersion') < 1.89)
 {
 	add_action("init", "sfsi_update_plugin");
 }
 
+/* redirect setting page hook */
+add_action('admin_init', 'sfsi_plugin_redirect');
+function sfsi_plugin_redirect()
+{
+    if (get_option('sfsi_plugin_do_activation_redirect', false))
+    {
+        delete_option('sfsi_plugin_do_activation_redirect');
+        wp_redirect(admin_url('admin.php?page=sfsi-options'));
+    }
+}
 //shortcode for the ultimate social icons {Monad}
 add_shortcode("DISPLAY_ULTIMATE_SOCIAL_ICONS", "DISPLAY_ULTIMATE_SOCIAL_ICONS");
 function DISPLAY_ULTIMATE_SOCIAL_ICONS($args = null, $content = null)
@@ -181,6 +211,7 @@ if(is_admin())
 		add_action("init", "sfsi_getverification_code");
 	}
 }
+
 function sfsi_getverification_code()
 {
 	$feed_id = sanitize_text_field(get_option('sfsi_feed_id'));
@@ -223,7 +254,7 @@ function string_sanitize($s) {
 }
 
 //Add Subscriber form css
-add_action("wp_head", "addStyleFunction");
+add_action("wp_footer", "addStyleFunction");
 function addStyleFunction()
 {
 	$option8 = unserialize(get_option('sfsi_section8_options',false));
@@ -374,48 +405,17 @@ function sfsi_admin_notice()
 {
 	$language = get_option("WPLANG");
 	
-	if(isset($_GET['page']) && $_GET['page'] == "sfsi-options")
-	{
-		$style = "overflow: hidden; margin:12px 3px 0px;";
-	}
-	else
-	{
-		$style = "overflow: hidden;"; 
-	}
+	// if(isset($_GET['page']) && $_GET['page'] == "sfsi-options")
+	// {
+	// 	$style = "overflow: hidden; margin:12px 3px 0px;";
+	// }
+	// else
+	// {
+	// 	$style = "overflow: hidden;"; 
+	// }
 	
+	$style = "overflow: hidden;"; 
 
-	
-	if(get_option("sfsi_curlErrorNotices") == "yes")
-	{ 
-		?>
-		<style type="text/css">
-			form.sfsi_curlNoticeDismiss {
-			    display: inline-block;
-			    margin: 5px 0 0;
-			    vertical-align: middle;
-			}
-			.sfsi_curlNoticeDismiss input[type='submit']{
-				background-color: transparent;
-			    border: medium none;
-			    margin: 0;
-			    padding: 0;
-			    cursor: pointer;
-			}
-		</style>
-		<div class="error" style="<?php echo $style; ?>">
-			<div class="alignleft" style="margin: 9px 0;">
-				There seems to be an error on your website which prevents the plugin to work properly. Please contact us at <a href="mailto:support@ultimatelysocial.com">support@ultimatelysocial.com</a> and state the error code you see below.
-                <p style="text-align:left"><b>Error : <?php echo ucfirst(get_option("sfsi_curlErrorMessage")); ?></b></p>
-			</div>
-			<div class="alignright">
-				<form method="post" class="sfsi_curlNoticeDismiss">
-					<input type="hidden" name="sfsi-dismiss-curlNotice" value="true">
-					<input type="submit" name="dismiss" value="Dismiss" />
-				</form>
-			</div>
-		</div>
-	<?php }
-	
 	/**
 	 * if wordpress uses other language
 	 */
@@ -507,6 +507,46 @@ function sfsi_admin_notice()
 		<?php
 	} 
 	
+
+	if(is_ssl()){
+		
+		if(get_option("show_premium_cumulative_count_notification") == "yes")
+		{
+			?>
+			<style type="text/css">
+				.sfsi_show_premium_cumulative_count_notification a{
+				   	color: #fff;
+				}
+				form.sfsi_premiumCumulativeCountNoticeDismiss {
+				    display: inline-block;
+				    margin: 5px 0 0;
+				    vertical-align: middle;
+				}
+				.sfsi_premiumCumulativeCountNoticeDismiss input[type='submit']{
+					background-color: transparent;
+				    border: medium none;
+				    color: #fff;
+				    margin: 0;
+				    padding: 0;
+				    cursor: pointer;
+				}
+			</style>
+		    <div class="updated sfsi_show_premium_cumulative_count_notification" style="<?php echo $style; ?>background-color: #38B54A; color: #fff; font-size: 18px;">
+				<div class="alignleft" style="margin: 9px 0;">
+					<b>Recently switched to https?</b> If you don’t want to lose the Facebook share & like counts <a href="https://www.ultimatelysocial.com/usm-premium/?utm_source=usmi_settings_page&utm_campaign=https_share_counts&utm_medium=banner" target="_blank">have a look at our Premium Plugin</a>, we found a fix for that: <a href="https://www.ultimatelysocial.com/usm-premium/?utm_source=usmi_settings_page&utm_campaign=https_share_counts&utm_medium=banner" target="_blank">Check it out</a>
+				</div>
+				<div class="alignright">
+					<form method="post" class="sfsi_premiumCumulativeCountNoticeDismiss">
+						<input type="hidden" name="sfsi-dismiss-premiumCumulativeCountNoticeDismiss" value="true">
+						<input type="submit" name="dismiss" value="Dismiss" />
+					</form>
+				</div>
+			</div>
+			<?php
+		} 
+	}
+
+
 	/* show mobile notification */
 	if(get_option("show_mobile_notification") == "yes"){
 		$sfsi_install_date = strtotime(get_option( 'sfsi_installDate' ));
@@ -547,7 +587,59 @@ function sfsi_admin_notice()
 		}
 	}
 /* end show mobile notification */
-	
+/* start phpversion error notification*/
+    $phpVersion = phpVersion();
+	if($phpVersion <= '5.4')
+	{
+		if(get_option("sfsi_serverphpVersionnotification") == "yes")
+		{
+
+		?>
+         	<style type="text/css">
+			.sfsi_show_phperror_notification {
+			   	color: #fff;
+			   	text-decoration: underline;
+			}
+			form.sfsi_phperrorNoticeDismiss {
+			    display: inline-block;
+			    margin: 5px 0 0;
+			    vertical-align: middle;
+			}
+			.sfsi_phperrorNoticeDismiss input[type='submit']
+			{
+				background-color: transparent;
+			    border: medium none;
+			    color: #fff;
+			    margin: 0;
+			    padding: 0;
+			    cursor: pointer;
+			}
+			.sfsi_show_phperror_notification p{line-height: 22px;}
+			p.sfsi_show_notifictaionpragraph{padding: 0 !important;font-size: 18px;}
+			
+		</style>
+	     <div class="updated sfsi_show_phperror_notification" style="<?php echo $style; ?>background-color: #D22B2F; color: #fff; font-size: 18px; border-left-color: #D22B2F;">
+			<div class="alignleft" style="margin: 9px 0;">
+				<p class="sfsi_show_notifictaionpragraph">
+					We noticed you are running your site on a PHP version older than 5.4. Please upgrade to a more recent version. This is not only important for running the Ultimate Social Media Plugin, but also for security reasons in general.
+					<br>
+					If you do not know how to do the upgrade, please ask your server team or hosting company to do it for you.' 
+                </p>
+		
+			</div>
+			<div class="alignright">
+				<form method="post" class="sfsi_phperrorNoticeDismiss">
+					<input type="hidden" name="sfsi-dismiss-phperrorNotice" value="true">
+					<input type="submit" name="dismiss" value="Dismiss" />
+				</form>
+			</div>
+		</div>      
+            
+		<?php
+		}
+	}
+
+
 }
 add_action('admin_init', 'sfsi_dismiss_admin_notice');
 function sfsi_dismiss_admin_notice()
@@ -555,12 +647,6 @@ function sfsi_dismiss_admin_notice()
 	if ( isset($_REQUEST['sfsi-dismiss-notice']) && $_REQUEST['sfsi-dismiss-notice'] == 'true' )
 	{
 		update_option( 'show_notification_plugin', "no" );
-		//header("Location: ".site_url()."/wp-admin/admin.php?page=sfsi-options");die;
-	}
-	
-	if ( isset($_REQUEST['sfsi-dismiss-curlNotice']) && $_REQUEST['sfsi-dismiss-curlNotice'] == 'true' )
-	{
-		update_option( 'sfsi_curlErrorNotices', "no" );
 		//header("Location: ".site_url()."/wp-admin/admin.php?page=sfsi-options");die;
 	}
 	
@@ -581,6 +667,15 @@ function sfsi_dismiss_admin_notice()
 		update_option( 'show_mobile_notification', "no" );
 		//header("Location: ".site_url()."/wp-admin/admin.php?page=sfsi-options");die;
 	}
+	if ( isset($_REQUEST['sfsi-dismiss-phperrorNotice']) && $_REQUEST['sfsi-dismiss-phperrorNotice'] == 'true' )
+	{
+		update_option( 'sfsi_serverphpVersionnotification', "no" );
+	}
+	if ( isset($_REQUEST['sfsi-dismiss-premiumCumulativeCountNoticeDismiss']) && $_REQUEST['sfsi-dismiss-premiumCumulativeCountNoticeDismiss'] == 'true' )
+	{
+		update_option( 'show_premium_cumulative_count_notification', "no" );
+	}
+
 }
 
 function sfsi_get_bloginfo($url)
@@ -616,4 +711,59 @@ function sfsi_actionLinks($links)
 	return $links;
 }
 
-?>
+/* redirect setting page hook */
+
+/*add_action('admin_init', 'sfsi_plugin_redirect');
+function sfsi_plugin_redirect()
+{
+    if (get_option('sfsi_plugin_do_activation_redirect', false))
+    {
+        delete_option('sfsi_plugin_do_activation_redirect');
+        wp_redirect(admin_url('admin.php?page=sfsi-options'));
+    }
+}
+*/
+function sfsi_curl_error_notification()
+{
+	if(get_option("sfsi_curlErrorNotices") == "yes")
+	{   
+		?>
+	        <script type="text/javascript">
+	        jQuery(document).ready(function(e) {
+	            jQuery(".sfsi_curlerror_cross").click(function(){
+	                SFSI.ajax({
+	                    url:ajax_object.ajax_url,
+	                    type:"post",
+	                    data: {action: "sfsi_curlerrornotification"},
+	                    success:function(msg)
+	                    {   
+	                        jQuery(".sfsi_curlerror").hide("fast");
+	                        
+	                    }
+	                });
+	            });
+	        });
+	        </script>
+
+	        <div class="sfsi_curlerror">
+	            We noticed that your site returns a cURL error («Error:  
+	            <?php  echo ucfirst(get_option("sfsi_curlErrorMessage")); ?>
+	            »). This means that it cannot send a notification to SpecificFeeds.com when a new post is published. Therefore this email-feature doesn’t work. However there are several solutions for this, please visit our FAQ to see the solutions («Perceived bugs» => «cURL error messages»): 
+	            <a href="https://www.ultimatelysocial.com/faq/" target="_new">
+	                www.ultimatelysocial.com/faq
+	            </a>
+	           <div class="sfsi_curlerror_cross">Dismiss</div>
+	        </div>
+        <?php  
+    } 
+}
+
+function _is_curl_installed(){
+
+	if(in_array('curl', get_loaded_extensions())) {
+	    return true;
+	}
+	else{
+	    return false;
+	}
+}

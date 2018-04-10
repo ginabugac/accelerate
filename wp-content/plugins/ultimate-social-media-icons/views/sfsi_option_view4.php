@@ -135,6 +135,10 @@ $hide="display:none;";
 
 <!-- Section 4 "Do you want to display "counts" next to your icons?" main div Start -->
 <div class="tab4">
+    <div class="sfsi_curlerrorNotification">
+        <?php sfsi_curl_error_notification(); ?>
+    </div>
+
     <p>It’s a psychological fact that people like to follow other people (as explained well in Robert Cialdini’s book “<a href="http://www.amazon.com/Influence-Psychology-Persuasion-Revised-Edition/dp/006124189X" target="_blank" class="lit_txt">Influence</a>”), so when they see that your site has already a good number of Facebook likes, it’s more likely that they will subscribe/like/share your site than if it had 0.</p>
     <p>Therefore, you can select to display the count next to your main icons, which will look like this:</p>
 	
@@ -498,7 +502,13 @@ $hide="display:none;";
                 <li><input name="sfsi_pinterest_countsFrom" <?php echo ($option4['sfsi_pinterest_countsFrom']=='pins') ?  'checked="true"' : '' ;?>  type="radio" value="pins" class="styled"  />Retrieve the number of Pins</li>
                     <li><input name="sfsi_pinterest_countsFrom" <?php echo ($option4['sfsi_pinterest_countsFrom']=='manual') ?  'checked="true"' : '' ;?>  type="radio" value="manual" class="styled" /><label class="high_prb">Enter the figure manually</label><input name="sfsi_pinterest_manualCounts" type="text" class="input" value="<?php echo ($option4['sfsi_pinterest_manualCounts']!='') ?  $option4['sfsi_pinterest_manualCounts'] : '' ;?>" style="<?php echo ($option4['sfsi_pinterest_countsFrom']=='pins') ?  'display:none;' : '' ;?>" /></li>
             </ul>
-        </div>    
+        </div>
+
+
+        <div class="sfsi_new_prmium_follw" style="margin-top: 38px;">
+            <p><b>New: </b>In the Premium Plugin you can also automatically show the number of PINs from your Pinterest account, or of a specific board, or the number of your Pinterest followers. <a href="https://www.ultimatelysocial.com/usm-premium/?utm_source=usmi_settings_page&utm_campaign=more_pinterest_counts&utm_medium=banner" target="_blank">See all features</a></p>
+        </div>
+
     </div>
     <!-- END PINIT ICON COUNT SECTION-->
     

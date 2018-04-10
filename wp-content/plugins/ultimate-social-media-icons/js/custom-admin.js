@@ -36,6 +36,10 @@ function sfsi_delete_CusIcon(s, i) {
                 SFSI("li.custom:last-child").addClass("bdr_btm_non"), SFSI(".custom-links").find("div." + i.attr("name")).remove(), 
                 SFSI(".custom_m").find("div." + i.attr("name")).remove(), SFSI(".share_icon_order").children("li." + i.attr("name")).remove(), 
                 SFSI("ul.sfsi_sample_icons").children("li." + i.attr("name")).remove();
+
+                if(e.total_up==0){
+                    SFSI(".notice_custom_icons_premium").hide();
+                }
                 var n = e.total_up + 1;
                 4 == e.total_up && SFSI(".icn_listing").append('<li id="c' + t + '" class="custom bdr_btm_non"><div class="radio_section tb_4_ck"><span class="checkbox" dynamic_ele="yes" style="background-position: 0px 0px;"></span><input name="sfsiICON_' + t + '_display"  type="checkbox" value="yes" class="styled" style="display:none;" element-type="cusotm-icon" isNew="yes" /></div> <span class="custom-img"><img src="' + SFSI("#plugin_url").val() + 'images/custom.png" id="CImg_' + t + '"  /> </span> <span class="custom custom-txt">Custom' + n + ' </span> <div class="right_info"> <p><span>It depends:</span> Upload a custom icon if you have other accounts/websites you want to link to.</p><div class="inputWrapper"></div></li>');
             } else showErrorSuc("error", "Unkown error , please try again", 1);
@@ -521,6 +525,9 @@ function sfsi_update_step5() {
     SFSI("input[name='sfsi_custom_MouseOverTexts[]']").each(function() {
         O[SFSI(this).attr("file-id")] = this.value;
     });
+
+   var sfsi_custom_social_hide = SFSI("input[name='sfsi_custom_social_hide']").val();
+
     var T = {
         action:"updateSrcn5",
         sfsi_icons_size:i,
@@ -558,6 +565,7 @@ function sfsi_update_step5() {
         sfsi_instagramIcon_order:I,
         sfsi_linkedinIcon_order:F,
         sfsi_custom_orders:h,
+        sfsi_custom_social_hide:sfsi_custom_social_hide,
 		nonce:nonce
     };
 	SFSI.ajax({
@@ -1300,7 +1308,9 @@ function afterIconSuccess(s)
         SFSI(".uperror").html("");
 		showErrorSuc("success", "Custom Icon updated successfully", 1);
         d = new Date();
-		
+
+        var ele = SFSI(".notice_custom_icons_premium");
+
 		SFSI("li.custom:last-child").removeClass("bdr_btm_non"); 
         SFSI("li.custom:last-child").children("span.custom-img").children("img").attr("src", s.img_path+ "?" + d.getTime());
 		SFSI("input[name=sfsiICON_" + s.key + "]").removeAttr("ele-type"); 
@@ -1308,11 +1318,14 @@ function afterIconSuccess(s)
 		icons_name = SFSI("li.custom:last-child").find("input.styled").attr("name");
         var n = icons_name.split("_");
         s.key = s.key, s.img_path += "?" + d.getTime(), 5 > e && SFSI(".icn_listing").append('<li id="c' + i + '" class="custom bdr_btm_non"><div class="radio_section tb_4_ck"><span class="checkbox" dynamic_ele="yes" style="background-position: 0px 0px;"></span><input name="sfsiICON_' + i + '"  type="checkbox" value="yes" class="styled" style="display:none;" element-type="cusotm-icon" isNew="yes" /></div> <span class="custom-img"><img src="' + SFSI("#plugin_url").val() + 'images/custom.png" id="CImg_' + i + '"  /> </span> <span class="custom custom-txt">Custom' + t + ' </span> <div class="right_info"> <p><span>It depends:</span> Upload a custom icon if you have other accounts/websites you want to link to.</p><div class="inputWrapper"></div></li>'), 
-        SFSI(".custom_section").show(), SFSI(".custom-links").append(' <div class="row  sfsiICON_' + s.key + ' cm_lnk"> <h2 class="custom"> <span class="customstep2-img"> <img   src="' + s.img_path + "?" + d.getTime() + '" style="border-radius:48%" /> </span> <span class="sfsiCtxt">Custom ' + e + '</span> </h2> <div class="inr_cont "><p>Where do you want this icon to link to?</p> <p class="radio_section fb_url custom_section  sfsiICON_' + s.key + '" ><label>Link :</label><input file-id="' + s.key + '" name="sfsi_CustomIcon_links[]" type="text" value="" placeholder="http://" class="add" /></p></div></div>');
+        SFSI(".custom_section").show(),
+        SFSI('<div class="row  sfsiICON_' + s.key + ' cm_lnk"> <h2 class="custom"> <span class="customstep2-img"> <img   src="' + s.img_path + "?" + d.getTime() + '" style="border-radius:48%" /> </span> <span class="sfsiCtxt">Custom ' + e + '</span> </h2> <div class="inr_cont "><p>Where do you want this icon to link to?</p> <p class="radio_section fb_url custom_section  sfsiICON_' + s.key + '" ><label>Link :</label><input file-id="' + s.key + '" name="sfsi_CustomIcon_links[]" type="text" value="" placeholder="http://" class="add" /></p></div></div>').insertBefore('.notice_custom_icons_premium');
+        //SFSI(".custom-links").append(' <div class="row  sfsiICON_' + s.key + ' cm_lnk"> <h2 class="custom"> <span class="customstep2-img"> <img   src="' + s.img_path + "?" + d.getTime() + '" style="border-radius:48%" /> </span> <span class="sfsiCtxt">Custom ' + e + '</span> </h2> <div class="inr_cont "><p>Where do you want this icon to link to?</p> <p class="radio_section fb_url custom_section  sfsiICON_' + s.key + '" ><label>Link :</label><input file-id="' + s.key + '" name="sfsi_CustomIcon_links[]" type="text" value="" placeholder="http://" class="add" /></p></div></div>');
+        SFSI(".notice_custom_icons_premium").show();
         var o = SFSI("div.custom_m").find("div.mouseover_field").length;
         SFSI("div.custom_m").append(0 == o % 2 ? '<div class="clear"> </div> <div class="mouseover_field custom_section sfsiICON_' + s.key + '"><label>Custom ' + e + ':</label><input name="sfsi_custom_MouseOverTexts[]" value="" type="text" file-id="' + s.key + '" /></div>' :'<div class="cHover " ><div class="mouseover_field custom_section sfsiICON_' + s.key + '"><label>Custom ' + e + ':</label><input name="sfsi_custom_MouseOverTexts[]" value="" type="text" file-id="' + s.key + '" /></div>'), 
         SFSI("ul.share_icon_order").append('<li class="custom_iconOrder sfsiICON_' + s.key + '" data-index="" element-id="' + s.key + '" id=""><a href="#" title="Custom Icon" ><img src="' + s.img_path + '" alt="Linked In" class="sfcm"/></a></li>'), 
-        SFSI("ul.sfsi_sample_icons").append('<li class="sfsiICON_' + s.key + '" element-id="' + s.key + '" ><div><img src="' + s.img_path + '" alt="Linked In" class="sfcm"/><span class="sfsi_Cdisplay">12k</span></div></li>'), 
+        SFSI("ul.sfsi_sample_icons").append('<li class="sfsiICON_' + s.key + '" element-id="' + s.key + '" ><div><img src="' + s.img_path + '" alt="Linked In" class="sfcm"/><span class="sfsi_Cdisplay">12k</span></div></li>'),
         sfsi_update_index(), update_Sec5Iconorder(), sfsi_update_step1(), sfsi_update_step2(), 
         sfsi_update_step5(), SFSI(".upload-overlay").css("pointer-events", "auto"), sfsi_showPreviewCounts(), 
         afterLoad();
@@ -1800,6 +1813,20 @@ SFSI(document).ready(function(s) {
             t.toggleClass("accordion-content-active", !n), n ? t.slideUp() :t.slideDown(), !1;
         }
     }),
+
+    SFSI("#accordion2").accordion({
+        collapsible:!0,
+        active:!1,
+        heightStyle:"content",
+        event:"click",
+        beforeActivate:function(s, i) {
+            if (i.newHeader[0]) var e = i.newHeader, t = e.next(".ui-accordion-content"); else var e = i.oldHeader, t = e.next(".ui-accordion-content");
+            var n = "true" == e.attr("aria-selected");
+            return e.toggleClass("ui-corner-all", n).toggleClass("accordion-header-active ui-state-active ui-corner-top", !n).attr("aria-selected", (!n).toString()), 
+            e.children(".ui-icon").toggleClass("ui-icon-triangle-1-e", n).toggleClass("ui-icon-triangle-1-s", !n), 
+            t.toggleClass("accordion-content-active", !n), n ? t.slideUp() :t.slideDown(), !1;
+        }
+    }),    
 	SFSI(".closeSec").on("click", function() {
         var s = !0, i = SFSI(this).closest("div.ui-accordion-content").prev("h3.ui-accordion-header").first(), e = SFSI(this).closest("div.ui-accordion-content").first();
         i.toggleClass("ui-corner-all", s).toggleClass("accordion-header-active ui-state-active ui-corner-top", !s).attr("aria-selected", (!s).toString()), 
@@ -2080,6 +2107,24 @@ SFSI(document).ready(function(s) {
         },
         revert:!0
     }),
+
+//*------------------------------- Sharing text & pcitures checkbox for showing section in Page, Post STARTS -------------------------------------//
+
+    SFSI(document).on("click", '.checkbox', function () {
+
+    var s = SFSI(this).parent().find("input:checkbox:first");
+
+        if(s.attr('name')== "sfsi_custom_social_hide"){
+            var backgroundPos = jQuery(this).css('background-position').split(" ");
+            var xPos = backgroundPos[0],
+                yPos = backgroundPos[1];
+                var val = (yPos=="0px") ? "no":"yes";
+                SFSI('input[name="sfsi_custom_social_hide"]').val(val);        
+        }
+    });
+
+//*------------------------------- Sharing text & pcitures checkbox for showing section in Page, Post CLOSES -------------------------------------//
+
 	/*SFSI(".radio").live("click", function() {*/
 	SFSI(document).on("click", '.radio', function () {
         var s = SFSI(this).parent().find("input:radio:first");

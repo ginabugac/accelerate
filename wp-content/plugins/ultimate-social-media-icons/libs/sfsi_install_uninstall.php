@@ -12,9 +12,13 @@ function sfsi_update_plugin()
     }
     
     //Install version
-    update_option("sfsi_pluginVersion", "1.72");
+    update_option("sfsi_pluginVersion", "1.89");
 
-    
+
+    if(!get_option('sfsi_serverphpVersionnotification'))
+    {
+        add_option("sfsi_serverphpVersionnotification", "yes");
+    }
     if(!get_option('sfsi_footer_sec'))
     {
         add_option('sfsi_footer_sec','no');
@@ -24,7 +28,12 @@ function sfsi_update_plugin()
     {
         add_option("show_premium_notification", "yes");
     }
-    
+
+    if(!get_option('show_premium_cumulative_count_notification'))
+    {
+        add_option("show_premium_cumulative_count_notification", "yes");
+    }    
+
     /*show notification*/
     if(!get_option('show_notification'))
     {
@@ -128,15 +137,30 @@ function sfsi_update_plugin()
         $option4['sfsi_instagram_token']    = '';
         update_option('sfsi_section4_options', serialize($option4));
     }
+
+    $option5 = unserialize(get_option('sfsi_section5_options',false));
+    if(isset($option5) && !empty($option5) && !isset($option5['sfsi_custom_social_hide']))
+    {
+        $option5['sfsi_custom_social_hide']    = 'no';
+        update_option('sfsi_section5_options', serialize($option5));
+    }
 }
 function sfsi_activate_plugin()
 {
+    add_option('sfsi_plugin_do_activation_redirect', true);
     /* check for CURL enable at server */
    curl_enable_notice();
+    
     if(!get_option('show_new_notification'))
     {
         add_option("show_new_notification", "yes");
     }
+
+    if(!get_option('show_premium_cumulative_count_notification'))
+    {
+        add_option("show_premium_cumulative_count_notification", "yes");
+    }
+
 
     $options1=array('sfsi_rss_display'=>'yes',
             'sfsi_email_display'=>'yes',
@@ -297,6 +321,7 @@ function sfsi_activate_plugin()
         'sfsi_youtube_MouseOverText'=>'YouTube',
         'sfsi_share_MouseOverText'=>'Share',
         'sfsi_custom_MouseOverTexts'=>'',
+        'sfsi_custom_social_hide' => 'no'
         );
     add_option('sfsi_section5_options',  serialize($options5));
     
@@ -422,6 +447,11 @@ function sfsi_Unistall_plugin()
 	delete_option("show_mobile_notification");
 	delete_option("show_notification");
 	delete_option("show_new_notification");
+    delete_option('sfsi_serverphpVersionnotification');
+    delete_option("show_premium_cumulative_count_notification");
+
+    delete_option('widget_sfsi_widget');
+    delete_option('widget_subscriber_widget');
 }
 /* end function */
 
@@ -536,8 +566,12 @@ function sfsi_check_wp_head() {
         $path=pathinfo($_SERVER['REQUEST_URI']);
         if($path['basename']=="themes.php" || $path['basename']=="theme-editor.php" || $path['basename']=="admin.php?page=sfsi-options")
         {
-            echo "<div class=\"error\" >" . "<p> Error : Please fix your theme to make plugins work correctly: Go to the <a href=\"theme-editor.php\">Theme Editor</a> and insert <code>&lt;?php wp_head(); ?&gt;</code> just before the <code>&lt;/head&gt;</code> line of your theme's <code>header.php</code> file." . "</p></div>";
-        }   
+            $currentTheme = wp_get_theme();
+                        
+            if(isset($currentTheme) && !empty($currentTheme) && $currentTheme->get( 'Name' ) != "Customizr"){
+                echo "<div class=\"error\" >" . "<p> Error : Please fix your theme to make plugins work correctly: Go to the <a href=\"theme-editor.php\">Theme Editor</a> and insert <code>&lt;?php wp_head(); ?&gt;</code> just before the <code>&lt;/head&gt;</code> line of your theme's <code>header.php</code> file." . "</p></div>";
+            }
+        }  
     }
 }
 /* admin notice if wp_footer is missing in active theme */
@@ -590,7 +624,7 @@ function sfsi_rating_msg()
     $diff_inrval = round(($datetime2->format('U') - $datetime1->format('U')) / (60*60*24));
     if($diff_inrval >= 30 && get_option('sfsi_RatingDiv')=="no")
     {
-     echo '<div class="sfwp_fivestar">
+     echo '<div class="sfwp_fivestar notice notice-success is-dismissible">
                 <p>We noticed you\'ve been using the Ultimate Social Icons Plugin for more than 30 days. If you\'re happy with it, could you please do us a BIG favor and give it a 5-star rating on Wordpress?</p>
                 <ul>
                     <li><a href="https://wordpress.org/support/plugin/ultimate-social-media-icons/reviews/" target="_new" title="Ok, you deserved it">Ok, you deserved it</a></li>

@@ -36,5 +36,47 @@
              'rewrite' => array( 'slug' => 'case-studies' ),
          )
      );
+     register_post_type( 'services',
+         array(
+             'labels' => array(
+                 'name' => __( 'Services' ),
+                 'singular_name' => __( 'Service' )
+             ),
+             'public' => true,
+             'has_archive' => false,
+             'rewrite' => array( 'slug' => 'services' ),
+         )
+     );
+
  }
+
+
+
  add_action( 'init', 'create_custom_post_types' );
+
+function accelerate_theme_child_widget_init() {
+	
+	register_sidebar( array(
+	    'name' =>__( 'Homepage sidebar', 'accelerate-theme-child'),
+	    'id' => 'sidebar-2',
+	    'description' => __( 'Appears on the static front page template', 'accelerate-theme-child' ),
+	    'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+	    'after_widget' => '</aside>',
+	    'before_title' => '<h3 class="widget-title">',
+	    'after_title' => '</h3>',
+	) );
+	
+}
+add_action( 'widgets_init', 'accelerate_theme_child_widget_init' );
+
+
+//Remove 'Accelerate' in the description - call in footer.php ONLY
+function green_accelerate_footer(){
+  add_filter( 'option_blogdescription', 'accelerate_change_description_footer', 10, 2 );
+  
+  function accelerate_change_description_footer( $description ) {
+    $description = str_replace('Accelerate', '', $description);
+    return $description;
+  } 
+};
+
